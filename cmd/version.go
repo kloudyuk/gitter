@@ -6,28 +6,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var Version = "0.0.0" // set at compile time with -ldflags "-X github.com/kloudyuk/gitter/cmd.Version="
-var SHA = "dev"       // set at compile time with -ldflags "-X github.com/kloudyuk/gitter/cmd.SHA=$(git rev-parse --short HEAD)"
+var version = "0.1.0"
 
 func init() {
 	rootCmd.AddCommand(versionCmd())
 }
 
 func versionCmd() *cobra.Command {
-	flags := struct {
-		short bool
-	}{}
 	cmd := &cobra.Command{
 		Use:   "version",
-		Short: "Display the version info",
+		Short: "Display the version",
 		Run: func(cmd *cobra.Command, args []string) {
-			if flags.short {
-				fmt.Println(Version)
-			} else {
-				fmt.Printf("%s (%s)\n", Version, SHA)
-			}
+			fmt.Println(version)
 		},
 	}
-	cmd.Flags().BoolVarP(&flags.short, "short", "s", false, "Show short version without SHA")
 	return cmd
 }
