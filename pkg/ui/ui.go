@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"kloudy/gitter/pkg/git"
 	"os"
 	"runtime"
 	"time"
+
+	"github.com/kloudyuk/gitter/pkg/git"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"

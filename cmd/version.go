@@ -6,8 +6,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var Version = "0.0.0" // set at compile time with -ldflags "-X kloudy/gitter/cmd.Version="
-var SHA = "dev"       // set at compile time with -ldflags "-X kloudy/gitter/cmd.SHA=$(git rev-parse --short HEAD)"
+var Version = "0.0.0" // set at compile time with -ldflags "-X github.com/kloudyuk/gitter/cmd.Version="
+var SHA = "dev"       // set at compile time with -ldflags "-X github.com/kloudyuk/gitter/cmd.SHA=$(git rev-parse --short HEAD)"
 
 func init() {
 	rootCmd.AddCommand(versionCmd())

@@ -6,7 +6,7 @@ sha := $(shell git rev-parse --short HEAD)
 .PHONY: build
 build:
 	go build \
-		-ldflags "-X kloudy/gitter/cmd.Version=$(version) -X kloudy/gitter/cmd.SHA=$(sha)" \
+		-ldflags "-X github.com/kloudyuk/gitter/cmd.Version=$(version) -X github.com/kloudyuk/gitter/cmd.SHA=$(sha)" \
 		-o bin/gitter
 
 .PHONY: install

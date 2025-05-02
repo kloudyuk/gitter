@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"kloudy/gitter/pkg/ui"
 	"time"
+
+	"github.com/kloudyuk/gitter/pkg/ui"
 
 	"github.com/spf13/cobra"
 )

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"kloudy/gitter/cmd"
+	"github.com/kloudyuk/gitter/cmd"
 )
 
 func main() {
