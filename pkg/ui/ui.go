@@ -21,7 +21,8 @@ var (
 	mainStyle = lipgloss.NewStyle().
 			BorderStyle(lipgloss.NormalBorder()).
 			Width(maxWidth).
-			Padding(0, 1, 0, 1)
+			Padding(0, 1, 0, 1).
+			MarginBottom(1)
 
 	titleStyle = lipgloss.NewStyle().
 			Align(lipgloss.Center).
