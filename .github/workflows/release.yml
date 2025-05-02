@@ -1,15 +1,13 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
+  release:
+    types: [created]
 
 run-name: Release ${{ github.ref_name }}
 
 jobs:
   releases-matrix:
-    name: Release Go Binary
     runs-on: ubuntu-latest
     strategy:
       matrix:
