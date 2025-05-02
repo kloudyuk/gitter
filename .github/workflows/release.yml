@@ -1,13 +1,24 @@
 name: Release
 
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
 
 run-name: Release ${{ github.ref_name }}
 
 jobs:
-  releases-matrix:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Create release
+      run: gh release create ${{ github.ref_name }} --title "Release ${{ github.ref_name }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,5 +33,4 @@ jobs:
         goarch: ${{ matrix.goarch }}
         binary_name: "gitter"
         release_tag: ${{ github.ref_name }}
-        release_name: ${{ github.ref_name }}
         ldflags: -X "github.com/kloudyuk/gitter/cmd.Version=${{ github.ref_name }}" -X "github.com/kloudyuk/gitter/cmd.SHA=${{ github.sha }}"
