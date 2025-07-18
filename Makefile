@@ -1,5 +1,5 @@
 # Makefile for gitter
-.PHONY: build test cover lint clean help
+.PHONY: build test cover lint clean all help
 
 # Variables
 BINARY_NAME=gitter
@@ -8,6 +8,9 @@ LDFLAGS=-ldflags "-X github.com/kloudyuk/gitter/cmd.Version=$(VERSION)"
 
 # Default target
 .DEFAULT_GOAL := help
+
+## Run full CI pipeline: clean, lint, test with coverage, and build
+all: clean lint cover build
 
 ## Build the application
 build:
@@ -33,6 +36,7 @@ clean:
 ## Show help
 help:
 	@echo "Available targets:"
+	@echo "  all    - Run full CI pipeline (clean, lint, cover, build)"
 	@echo "  build  - Build the application"
 	@echo "  test   - Run tests"
 	@echo "  cover  - Run tests with coverage report"

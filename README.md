@@ -162,6 +162,13 @@ The live interface shows:
 
 ## Development
 
+### Complete CI Pipeline
+
+```bash
+# Run full CI pipeline: clean, lint, test with coverage, and build
+make all
+```
+
 ### Building
 
 ```bash
