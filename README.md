@@ -106,6 +106,7 @@ gitter clone <URL> [flags]
 - `-i, --interval duration` - Interval between clones (default: 2s, must be positive)
 - `-t, --timeout duration` - Git clone timeout (default: 10s, must be positive)
 - `-w, --width int` - Terminal width for display (default: 100, range: 50-300)
+- `-e, --error-history int` - Number of recent errors to display (default: 5, must be positive)
 - `-d, --demo` - Run in demo mode with simulated git operations
 
 **Note:** When using `--demo` flag, the URL argument becomes optional as the command will use a simulated repository.
@@ -117,12 +118,16 @@ Gitter validates input parameters to ensure reliable operation:
 - **Interval**: Must be positive (e.g., `500ms`, `2s`, `1m`)
 - **Timeout**: Must be positive (e.g., `10s`, `30s`, `2m`)
 - **Width**: Must be between 50 and 300 characters
+- **Error History**: Must be positive (e.g., `3`, `10`, `20`)
 
 Invalid inputs will show helpful error messages:
 
 ```bash
 $ gitter clone --demo --width 30
 ERROR: width must be between 50 and 300, got 30
+
+$ gitter clone --demo --error-history 0
+ERROR: error-history must be positive, got 0
 ```
 
 ## Display Interface
@@ -232,8 +237,7 @@ make clean
 
 ## Output Files
 
-- `gitter.log` - Error log for clone operations
-- `gitter-demo.log` - Error log for demo mode
+- `gitter.log` - Error log for real clone operations (demo mode creates no log files)
 - `coverage.html` - Test coverage report (when running `make cover`)
 
 ## Configuration

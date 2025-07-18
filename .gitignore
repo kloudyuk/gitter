@@ -21,13 +21,6 @@ bin/
 # Log files
 *.log
 
-# Files that were removed but keep reappearing
-.golangci.yml
-buildinfo.go
-*.log
-gitter.log
-gitter-demo.log
-
 # IDE files
 .vscode/
 .idea/

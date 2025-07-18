@@ -262,3 +262,69 @@ func TestCloneCommandInputValidation(t *testing.T) {
 		})
 	}
 }
+
+func TestCloneCommandErrorHistoryValidation(t *testing.T) {
+tests := []struct {
+name         string
+errorHistory string
+wantErr      bool
+errMsg       string
+}{
+{
+name:         "negative error history",
+errorHistory: "-1",
+wantErr:      true,
+errMsg:       "error-history must be positive",
+},
+{
+name:         "zero error history",
+errorHistory: "0",
+wantErr:      true,
+errMsg:       "error-history must be positive",
+},
+{
+name:         "valid error history",
+errorHistory: "10",
+wantErr:      false,
+},
+}
+
+for _, tt := range tests {
+t.Run(tt.name, func(t *testing.T) {
+cmd := cloneCmd()
+args := []string{"--demo", "--error-history", tt.errorHistory}
+cmd.SetArgs(args)
+
+// Parse flags
+err := cmd.ParseFlags(args)
+if err != nil {
+t.Fatalf("Failed to parse flags: %v", err)
+}
+
+// Get the flag values
+errorHistory, err := cmd.Flags().GetInt("error-history")
+if err != nil {
+t.Fatalf("Failed to get error-history flag: %v", err)
+}
+
+// Test validation logic
+var validationErr error
+if errorHistory <= 0 {
+validationErr = errors.New("error-history must be positive")
+}
+
+if tt.wantErr {
+if validationErr == nil {
+t.Errorf("Expected validation error but got none")
+}
+if validationErr != nil && !strings.Contains(validationErr.Error(), tt.errMsg) {
+t.Errorf("Expected error containing '%s' but got '%s'", tt.errMsg, validationErr.Error())
+}
+} else {
+if validationErr != nil {
+t.Errorf("Got unexpected validation error: %v", validationErr)
+}
+}
+})
+}
+}

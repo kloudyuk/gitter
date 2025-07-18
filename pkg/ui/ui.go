@@ -202,7 +202,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		} else {
 			m.fail.count++
 			m.errorStats.addError(msg.err, time.Now())
-			_, _ = m.settings.log.Write([]byte(msg.err.Error() + "\n"))
+			// Only log to file in real mode (not demo mode)
+			if m.settings.log != nil {
+				_, _ = m.settings.log.Write([]byte(msg.err.Error() + "\n"))
+			}
 		}
 		return m, waitForResults(m.resultC)
 	default:
@@ -291,24 +294,23 @@ func title(s, color string) string {
 		Render(s)
 }
 
-func Start(repo string, interval, timeout time.Duration, width int, demoMode bool) error {
-	var logFileName string
-	if demoMode {
-		logFileName = "gitter-demo.log"
-	} else {
-		logFileName = "gitter.log"
-	}
-
-	f, err := os.Create(logFileName)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if closeErr := f.Close(); closeErr != nil {
-			// Log close error, but don't override main error
-			_, _ = fmt.Fprintf(os.Stderr, "Warning: failed to close log file: %v\n", closeErr)
+func Start(repo string, interval, timeout time.Duration, width int, demoMode bool, errorHistory int) error {
+	var f *os.File
+	var err error
+	
+	// Only create log file for real mode, not demo mode
+	if !demoMode {
+		f, err = os.Create("gitter.log")
+		if err != nil {
+			return err
 		}
-	}()
+		defer func() {
+			if closeErr := f.Close(); closeErr != nil {
+				// Log close error, but don't override main error
+				_, _ = fmt.Fprintf(os.Stderr, "Warning: failed to close log file: %v\n", closeErr)
+			}
+		}()
+	}
 	p := tea.NewProgram(model{
 		settings: &appSettings{
 			t:        time.NewTicker(interval),
@@ -329,7 +331,7 @@ func Start(repo string, interval, timeout time.Duration, width int, demoMode boo
 		},
 		errorStats: &errorStats{
 			recentErrors: make([]errorInfo, 0),
-			maxRecent:    5,
+			maxRecent:    errorHistory,
 			totalErrors:  0,
 		},
 		success: result{
