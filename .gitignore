@@ -5,6 +5,7 @@
 *.so
 *.dylib
 gitter
+gitter-*
 
 # Test binary, built with `go test -c`
 *.test
