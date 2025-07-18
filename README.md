@@ -49,7 +49,17 @@ go install github.com/kloudyuk/gitter@latest
 go install github.com/kloudyuk/gitter@v1.2.3
 ```
 
-The version command will automatically report the correct version whether installed via `go install` with a tag or built locally.
+The version command will automatically report the correct version with git context:
+
+- **Makefile builds**: Shows the injected tag version (e.g., `v0.2.1`)
+- **Direct go install**: Shows commit SHA when not on a tag (e.g., `94ff064`)
+- **Tagged commits**: Shows tag with short SHA (e.g., `v0.2.1 (94ff064)`)
+
+### Check Version
+
+```bash
+gitter version
+```
 
 ## Usage
 

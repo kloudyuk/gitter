@@ -36,7 +36,7 @@ func getVersion() string {
 		if tag != "" && revision != "" {
 			return fmt.Sprintf("%s (%s)", tag, revision)
 		}
-		
+
 		// If we have only a tag, return it
 		if tag != "" {
 			return tag
