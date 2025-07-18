@@ -139,10 +139,11 @@ func TestCloneFlagParsing(t *testing.T) {
 			widthFlag := cmd.Flag("width")
 			if widthFlag.Value.String() != string(rune(tt.expectedWidth)) {
 				// Convert int to string for comparison
-				expectedWidthStr := ""
-				if tt.expectedWidth == 100 {
+				var expectedWidthStr string
+				switch tt.expectedWidth {
+				case 100:
 					expectedWidthStr = "100"
-				} else if tt.expectedWidth == 150 {
+				case 150:
 					expectedWidthStr = "150"
 				}
 				if widthFlag.Value.String() != expectedWidthStr {
@@ -161,16 +162,6 @@ func TestCloneFlagParsing(t *testing.T) {
 			}
 		})
 	}
-}
-
-// Helper function to check if slice contains string
-func contains(slice []string, item string) bool {
-	for _, s := range slice {
-		if s == item {
-			return true
-		}
-	}
-	return false
 }
 
 func TestCloneCommandInputValidation(t *testing.T) {
@@ -237,11 +228,12 @@ func TestCloneCommandInputValidation(t *testing.T) {
 			}
 
 			var width int
-			if tt.width == "30" {
+			switch tt.width {
+			case "30":
 				width = 30
-			} else if tt.width == "400" {
+			case "400":
 				width = 400
-			} else if tt.width == "100" {
+			case "100":
 				width = 100
 			}
 

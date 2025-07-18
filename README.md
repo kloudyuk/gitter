@@ -93,12 +93,27 @@ gitter clone <URL> [flags]
 
 **Flags:**
 
-- `-i, --interval duration` - Interval between clones (default: 2s)
-- `-t, --timeout duration` - Git clone timeout (default: 10s)
-- `-w, --width int` - Terminal width for display (default: 100)
+- `-i, --interval duration` - Interval between clones (default: 2s, must be positive)
+- `-t, --timeout duration` - Git clone timeout (default: 10s, must be positive)
+- `-w, --width int` - Terminal width for display (default: 100, range: 50-300)
 - `-d, --demo` - Run in demo mode with simulated git operations
 
 **Note:** When using `--demo` flag, the URL argument becomes optional as the command will use a simulated repository.
+
+### Input Validation
+
+Gitter validates input parameters to ensure reliable operation:
+
+- **Interval**: Must be positive (e.g., `500ms`, `2s`, `1m`)
+- **Timeout**: Must be positive (e.g., `10s`, `30s`, `2m`)
+- **Width**: Must be between 50 and 300 characters
+
+Invalid inputs will show helpful error messages:
+
+```bash
+$ gitter clone --demo --width 30
+ERROR: width must be between 50 and 300, got 30
+```
 
 ## Display Interface
 

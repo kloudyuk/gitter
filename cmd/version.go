@@ -21,25 +21,35 @@ func getVersion() string {
 
 	// Try to get version from build info (works with go install)
 	if info, ok := debug.ReadBuildInfo(); ok {
-		// Check the module version (this works with go install github.com/user/repo@version)
-		if info.Main.Version != "" && info.Main.Version != "(devel)" {
-			return info.Main.Version
-		}
-
-		// Check VCS information for tag or revision
-		var revision string
+		// Check VCS information for tag or revision first
+		var revision, tag string
 		for _, setting := range info.Settings {
 			if setting.Key == "vcs.tag" && setting.Value != "" {
-				return setting.Value
+				tag = setting.Value
 			}
 			if setting.Key == "vcs.revision" && len(setting.Value) >= 7 {
 				revision = setting.Value[:7]
 			}
 		}
 
-		// If we have a revision but no tag, return it
+		// If we have both tag and revision, combine them
+		if tag != "" && revision != "" {
+			return fmt.Sprintf("%s (%s)", tag, revision)
+		}
+		
+		// If we have only a tag, return it
+		if tag != "" {
+			return tag
+		}
+
+		// If we have only a revision, return it
 		if revision != "" {
 			return revision
+		}
+
+		// Fall back to module version (this works with go install github.com/user/repo@version)
+		if info.Main.Version != "" && info.Main.Version != "(devel)" {
+			return info.Main.Version
 		}
 	}
 

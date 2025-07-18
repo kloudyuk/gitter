@@ -56,9 +56,9 @@ Use the --demo flag to run in simulation mode without actually cloning repositor
 			return ui.Start(repoURL, flags.interval, flags.timeout, flags.width, flags.demo)
 		},
 	}
-	cmd.Flags().DurationVarP(&flags.interval, "interval", "i", 2*time.Second, "interval between clones")
-	cmd.Flags().DurationVarP(&flags.timeout, "timeout", "t", 10*time.Second, "timeout for clone operations")
-	cmd.Flags().IntVarP(&flags.width, "width", "w", 100, "terminal width for display")
+	cmd.Flags().DurationVarP(&flags.interval, "interval", "i", 2*time.Second, "interval between clones (must be positive)")
+	cmd.Flags().DurationVarP(&flags.timeout, "timeout", "t", 10*time.Second, "timeout for clone operations (must be positive)")
+	cmd.Flags().IntVarP(&flags.width, "width", "w", 100, fmt.Sprintf("terminal width for display (%d-%d)", MinWidth, MaxWidth))
 	cmd.Flags().BoolVarP(&flags.demo, "demo", "d", false, "run in demo mode with simulated git operations")
 	return cmd
 }

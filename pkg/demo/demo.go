@@ -3,7 +3,7 @@ package demo
 import (
 	"context"
 	"errors"
-	"math/rand"
+	"math/rand/v2"
 	"time"
 )
 
@@ -14,10 +14,6 @@ const (
 	SuccessRate    = 0.8                    // 80% success rate in demo mode
 	CloneTimeRange = 2500                   // Range in milliseconds (MaxCloneTime - MinCloneTime)
 )
-
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
 
 // DemoErrors represents various types of errors that can occur during git operations
 var DemoErrors = []error{
@@ -34,7 +30,7 @@ var DemoErrors = []error{
 // Clone simulates a git clone operation with realistic timing and error patterns
 func Clone(ctx context.Context, repo string) error {
 	// Simulate variable clone time using constants
-	cloneTime := MinCloneTime + time.Duration(rand.Intn(CloneTimeRange))*time.Millisecond
+	cloneTime := MinCloneTime + time.Duration(rand.IntN(CloneTimeRange))*time.Millisecond
 
 	// Create a timer for the clone operation
 	timer := time.NewTimer(cloneTime)
@@ -49,6 +45,6 @@ func Clone(ctx context.Context, repo string) error {
 			return nil // Success
 		}
 		// Return a random error
-		return DemoErrors[rand.Intn(len(DemoErrors))]
+		return DemoErrors[rand.IntN(len(DemoErrors))]
 	}
 }
