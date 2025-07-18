@@ -132,9 +132,10 @@ The live interface shows:
 ┌────────────────────────────────────────────────────────────────────────────────┐
 │                                    Gitter                                      │
 │ Config                                                                         │
-│ Repo     : https://github.com/user/repo.git                                    │
-│ Interval : 2s                                                                  │
-│ Timeout  : 10s                                                                 │
+│ Repo         : https://github.com/user/repo.git                                │
+│ Interval     : 2s                                                              │
+│ Timeout      : 10s                                                             │
+│ Error History: 5                                                               │
 │                                                                                │
 │ Stats                                                                          │
 │ Duration       : 1m30s                                                         │
@@ -153,7 +154,7 @@ The live interface shows:
 
 ### Key Features Displayed
 
-- **Config Section**: Shows repository URL, interval, and timeout settings
+- **Config Section**: Shows repository URL, interval, timeout, and error history settings
 - **Stats Section**: Runtime duration, current/max goroutines, current/max memory usage
 - **Recent Errors**: Recent errors with timestamps (configurable history length)
 - **Results**: Real-time success/failure counters with animated spinners

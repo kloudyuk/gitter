@@ -85,11 +85,12 @@ func TestConfigView(t *testing.T) {
 	styles := NewStyles(100)
 	m := model{
 		settings: &appSettings{
-			repo:     "https://github.com/test/repo.git",
-			interval: 2 * time.Second,
-			timeout:  10 * time.Second,
-			width:    100,
-			demoMode: false,
+			repo:         "https://github.com/test/repo.git",
+			interval:     2 * time.Second,
+			timeout:      10 * time.Second,
+			width:        100,
+			demoMode:     false,
+			errorHistory: 5,
 		},
 		styles: styles,
 	}
@@ -103,6 +104,9 @@ func TestConfigView(t *testing.T) {
 	}
 	if !strings.Contains(configView, "10s") {
 		t.Error("Config view should contain timeout")
+	}
+	if !strings.Contains(configView, "5") {
+		t.Error("Config view should contain error history")
 	}
 }
 

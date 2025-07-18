@@ -36,13 +36,14 @@ type model struct {
 }
 
 type appSettings struct {
-	t        *time.Ticker
-	repo     string
-	timeout  time.Duration
-	interval time.Duration
-	log      io.Writer
-	demoMode bool
-	width    int
+	t            *time.Ticker
+	repo         string
+	timeout      time.Duration
+	interval     time.Duration
+	log          io.Writer
+	demoMode     bool
+	width        int
+	errorHistory int
 }
 
 type result struct {
@@ -134,13 +135,15 @@ func (m model) View() string {
 
 func (m model) configView() string {
 	return fmt.Sprintf(`%s
-Repo     : %s
-Interval : %s
-Timeout  : %s`,
+Repo         : %s
+Interval     : %s
+Timeout      : %s
+Error History: %d`,
 		m.styles.SectionTitle("Config", "#BBBB00"),
 		m.settings.repo,
 		m.settings.interval,
 		m.settings.timeout,
+		m.settings.errorHistory,
 	)
 }
 
@@ -174,7 +177,7 @@ func (m model) errView() string {
 	}
 
 	var errorDisplay []string
-	errorDisplay = append(errorDisplay, m.styles.SectionTitle("Recent Errors", "#FF0000"))
+	errorDisplay = append(errorDisplay, m.styles.SectionTitle("Recent Errors", "#BBBB00"))
 
 	// Show recent errors with timestamps
 	for i := len(recentErrors) - 1; i >= 0; i-- {
@@ -222,13 +225,14 @@ func Start(repo string, interval, timeout time.Duration, width int, demoMode boo
 
 	p := tea.NewProgram(model{
 		settings: &appSettings{
-			t:        time.NewTicker(interval),
-			repo:     repo,
-			timeout:  timeout,
-			interval: interval,
-			log:      f,
-			demoMode: demoMode,
-			width:    width,
+			t:            time.NewTicker(interval),
+			repo:         repo,
+			timeout:      timeout,
+			interval:     interval,
+			log:          f,
+			demoMode:     demoMode,
+			width:        width,
+			errorHistory: errorHistory,
 		},
 		stats:       stats,
 		errorStats:  errorStats,
