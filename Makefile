@@ -3,13 +3,15 @@
 
 # Variables
 BINARY_NAME=gitter
+VERSION ?= $(shell git describe --tags --exact-match 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || echo "dev")
+LDFLAGS=-ldflags "-X github.com/kloudyuk/gitter/cmd.Version=$(VERSION)"
 
 # Default target
 .DEFAULT_GOAL := help
 
 ## Build the application
 build:
-	go build -o $(BINARY_NAME) .
+	go build $(LDFLAGS) -o $(BINARY_NAME) .
 
 ## Run tests
 test:

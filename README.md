@@ -42,8 +42,14 @@ make build
 ### Install Directly
 
 ```bash
+# Install latest version
 go install github.com/kloudyuk/gitter@latest
+
+# Install specific tagged version
+go install github.com/kloudyuk/gitter@v1.2.3
 ```
+
+The version command will automatically report the correct version whether installed via `go install` with a tag or built locally.
 
 ## Usage
 
@@ -143,7 +149,11 @@ The live interface shows:
 ### Building
 
 ```bash
+# Build with automatic version detection
 make build
+
+# Build with specific version
+VERSION=v1.2.3 make build
 ```
 
 ### Testing
