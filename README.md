@@ -1,6 +1,6 @@
 # Gitter
 
-A simple utility for testing git server stability by repeatedly cloning repositories and monitoring system resources.
+A simple utility for testing git server stability by repeatedly cloning repositories.
 
 ## Overview
 
@@ -9,9 +9,9 @@ Gitter helps you test the reliability and performance of git servers by continuo
 - **Success/failure rates** with real-time counters
 - **System resources** including goroutines and memory usage (current and peak values)
 - **Error history** with timestamps for troubleshooting
-- **Runtime duration** to monitor long-term stability
+- **Runtime duration**
 
-Perfect for testing git server upgrades, network stability, or repository access patterns.
+Perfect for monitoring status of git server during changes & upgrades.
 
 ## Features
 
@@ -31,14 +31,6 @@ Perfect for testing git server upgrades, network stability, or repository access
 - Go 1.19 or later
 - Git (for actual repository cloning)
 
-### Build from Source
-
-```bash
-git clone https://github.com/kloudyuk/gitter.git
-cd gitter
-make build
-```
-
 ### Install Directly
 
 ```bash
@@ -49,11 +41,13 @@ go install github.com/kloudyuk/gitter@latest
 go install github.com/kloudyuk/gitter@v0.3.1
 ```
 
-The version command will automatically report the correct version with git context:
+### Build from Source
 
-- **Makefile builds**: Shows the injected tag version (e.g., `v0.2.1`)
-- **Direct go install**: Shows commit SHA when not on a tag (e.g., `94ff064`)
-- **Tagged commits**: Shows tag with short SHA (e.g., `v0.2.1 (94ff064)`)
+```bash
+git clone https://github.com/kloudyuk/gitter.git
+cd gitter
+make build
+```
 
 ### Check Version
 
@@ -65,7 +59,7 @@ gitter version
 
 ### Basic Git Server Testing
 
-Test a git repository with default settings (2-second intervals, 10-second timeout):
+Test cloning a git repository with default settings (2-second intervals, 10-second timeout):
 
 ```bash
 gitter clone https://github.com/user/repository.git
@@ -138,7 +132,7 @@ The live interface shows:
 ┌────────────────────────────────────────────────────────────────────────────────┐
 │                                    Gitter                                      │
 │ Config                                                                         │
-│ Repo     : https://github.com/user/repo.git                                   │
+│ Repo     : https://github.com/user/repo.git                                    │
 │ Interval : 2s                                                                  │
 │ Timeout  : 10s                                                                 │
 │                                                                                │
@@ -199,12 +193,6 @@ make cover
 make lint
 ```
 
-### Cleaning
-
-```bash
-make clean
-```
-
 ## How It Works
 
 1. **Repository Cloning**: Uses [go-git](https://github.com/go-git/go-git) for efficient in-memory cloning
@@ -212,27 +200,6 @@ make clean
 3. **Resource Monitoring**: Tracks system metrics every second using Go's runtime package
 4. **Error Tracking**: Maintains a rolling buffer of recent errors with timestamps
 5. **UI Updates**: Real-time terminal interface using [Bubble Tea](https://github.com/charmbracelet/bubbletea)
-
-## Use Cases
-
-### Git Server Testing
-
-- Test server stability during upgrades
-- Validate load balancing configurations
-- Monitor repository access patterns
-- Stress test authentication systems
-
-### Network Reliability
-
-- Test git operations over unstable connections
-- Monitor clone performance across different networks
-- Validate VPN or proxy configurations
-
-### Performance Monitoring
-
-- Baseline git server performance
-- Monitor resource usage during peak loads
-- Track long-term stability trends
 
 ## Output Files
 
