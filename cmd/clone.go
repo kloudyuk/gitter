@@ -27,7 +27,7 @@ func cloneCmd() *cobra.Command {
 		},
 	}
 	cmd.Flags().DurationVarP(&flags.interval, "interval", "i", 2*time.Second, "interval between clones")
-	cmd.Flags().DurationVarP(&flags.timeout, "timeout", "t", 10*time.Second, "git clone timeout")
-	cmd.Flags().IntVarP(&flags.width, "width", "w", 120, "terminal width for display")
+	cmd.Flags().DurationVarP(&flags.timeout, "timeout", "t", 10*time.Second, "timeout for clone operations")
+	cmd.Flags().IntVarP(&flags.width, "width", "w", 100, "terminal width for display")
 	return cmd
 }

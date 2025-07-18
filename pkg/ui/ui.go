@@ -266,13 +266,6 @@ func (m model) errView() string {
 	var errorDisplay []string
 	errorDisplay = append(errorDisplay, title("Recent Errors", "#FF0000"))
 
-	// Calculate error rate (errors per minute)
-	if m.errorStats.totalErrors > 0 {
-		duration := time.Since(m.stats.startTime)
-		errorRate := float64(m.errorStats.totalErrors) / duration.Minutes()
-		errorDisplay = append(errorDisplay, fmt.Sprintf("Error Rate: %.1f/min", errorRate))
-	}
-
 	// Show recent errors with timestamps
 	for i := len(m.errorStats.recentErrors) - 1; i >= 0; i-- {
 		errInfo := m.errorStats.recentErrors[i]

@@ -29,7 +29,7 @@ It will show simulated successes and failures with realistic timing.`,
 		},
 	}
 	cmd.Flags().DurationVarP(&flags.interval, "interval", "i", 2*time.Second, "interval between simulated clones")
-	cmd.Flags().DurationVarP(&flags.timeout, "timeout", "t", 10*time.Second, "simulated git clone timeout")
-	cmd.Flags().IntVarP(&flags.width, "width", "w", 120, "terminal width for display")
+	cmd.Flags().DurationVarP(&flags.timeout, "timeout", "t", 10*time.Second, "timeout for demo operations")
+	cmd.Flags().IntVarP(&flags.width, "width", "w", 100, "terminal width for display")
 	return cmd
 }

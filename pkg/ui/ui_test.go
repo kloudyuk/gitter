@@ -88,28 +88,3 @@ func TestAppStatsMaxTracking(t *testing.T) {
 		t.Errorf("Expected max memory to be 2048, got %d", stats.maxMemory)
 	}
 }
-
-func TestErrorRateCalculation(t *testing.T) {
-	startTime := time.Now().Add(-2 * time.Minute) // 2 minutes ago
-	stats := &appStats{
-		startTime: startTime,
-	}
-
-	errorStats := &errorStats{
-		totalErrors: 6, // 6 errors in 2 minutes = 3 errors/minute
-	}
-
-	rate := calculateErrorRate(stats, errorStats)
-	expected := 3.0
-	if rate < 2.9 || rate > 3.1 { // Allow for floating point precision
-		t.Errorf("Expected error rate to be around %.1f, got %.1f", expected, rate)
-	}
-}
-
-func calculateErrorRate(stats *appStats, errorStats *errorStats) float64 {
-	if errorStats.totalErrors == 0 {
-		return 0.0
-	}
-	duration := time.Since(stats.startTime)
-	return float64(errorStats.totalErrors) / duration.Minutes()
-}
