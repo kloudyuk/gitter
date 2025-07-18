@@ -8,7 +8,7 @@ Gitter helps you test the reliability and performance of git servers by continuo
 
 - **Success/failure rates** with real-time counters
 - **System resources** including goroutines and memory usage (current and peak values)
-- **Error history** with timestamps and error rate calculations
+- **Error history** with timestamps for troubleshooting
 - **Runtime duration** to monitor long-term stability
 
 Perfect for testing git server upgrades, network stability, or repository access patterns.
@@ -18,11 +18,11 @@ Perfect for testing git server upgrades, network stability, or repository access
 - 🔄 **Continuous Git Cloning** - Repeatedly clone repositories at configurable intervals
 - 📊 **Real-time Monitoring** - Live display of success/failure counts and system metrics
 - 📈 **Resource Tracking** - Monitor memory usage and goroutines with peak value tracking
-- 🚨 **Error Analysis** - Track recent errors with timestamps and calculate error rates
+- 🚨 **Error Analysis** - Track recent errors with timestamps for troubleshooting
 - ⏱️ **Duration Tracking** - See how long the stability test has been running
 - 🎨 **Configurable UI** - Adjustable terminal width for different screen sizes
 - 🎮 **Demo Mode** - Simulate git operations for testing and demonstration (use `--demo` flag)
-- 📝 **Logging** - All errors are logged to files for later analysis
+- 📝 **Logging** - Errors are logged to files for later analysis (real mode only, not in demo)
 
 ## Installation
 
@@ -45,8 +45,8 @@ make build
 # Install latest version
 go install github.com/kloudyuk/gitter@latest
 
-# Install specific tagged version
-go install github.com/kloudyuk/gitter@v1.2.3
+# Install specific tagged version (when available)
+go install github.com/kloudyuk/gitter@v0.3.1
 ```
 
 The version command will automatically report the correct version with git context:
@@ -148,13 +148,12 @@ The live interface shows:
 │ Memory         : 1024 KB (max: 2048 KB)                                        │
 │                                                                                │
 │ Recent Errors                                                                  │
-│ Error Rate: 2.5/min                                                            │
 │ 10s ago: connection timeout                                                    │
 │ 45s ago: remote hung up unexpectedly                                           │
 │                                                                                │
 │ ────────────────────────────────────────────────────────────────────────────── │
-│ ✓ Succeeded: 42                                                                │
-│ ✗ Failed: 3                                                                    │
+│ ⣽ Succeeded: 42                                                                │
+│ ⣽ Failed: 3                                                                    │
 └────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -162,7 +161,7 @@ The live interface shows:
 
 - **Config Section**: Shows repository URL, interval, and timeout settings
 - **Stats Section**: Runtime duration, current/max goroutines, current/max memory usage
-- **Recent Errors**: Last 5 errors with timestamps and error rate per minute
+- **Recent Errors**: Recent errors with timestamps (configurable history length)
 - **Results**: Real-time success/failure counters with animated spinners
 
 ## Development
