@@ -3,6 +3,7 @@ package ui
 import (
 	"errors"
 	"runtime"
+	"strings"
 	"testing"
 	"time"
 )
@@ -86,5 +87,55 @@ func TestAppStatsMaxTracking(t *testing.T) {
 	}
 	if stats.maxMemory != 2048 {
 		t.Errorf("Expected max memory to be 2048, got %d", stats.maxMemory)
+	}
+}
+
+// Test only the view generation without UI updates that could hang
+func TestConfigView(t *testing.T) {
+	m := model{
+		settings: &appSettings{
+			repo:     "https://github.com/test/repo.git",
+			interval: 2 * time.Second,
+			timeout:  10 * time.Second,
+			width:    100,
+			demoMode: false,
+		},
+	}
+
+	configView := m.configView()
+	if !strings.Contains(configView, "https://github.com/test/repo.git") {
+		t.Error("Config view should contain repository URL")
+	}
+	if !strings.Contains(configView, "2s") {
+		t.Error("Config view should contain interval")
+	}
+	if !strings.Contains(configView, "10s") {
+		t.Error("Config view should contain timeout")
+	}
+}
+
+func TestStatsView(t *testing.T) {
+	m := model{
+		stats: &appStats{
+			startTime:     time.Now().Add(-30 * time.Second), // 30 seconds ago
+			goRoutines:    5,
+			maxGoRoutines: 8,
+			memStats:      &runtime.MemStats{Alloc: 1024 * 1024}, // 1MB
+			maxMemory:     2 * 1024 * 1024,                       // 2MB
+		},
+	}
+
+	statsView := m.statsView()
+	if !strings.Contains(statsView, "5") {
+		t.Error("Stats view should contain current goroutines count")
+	}
+	if !strings.Contains(statsView, "8") {
+		t.Error("Stats view should contain max goroutines count")
+	}
+	if !strings.Contains(statsView, "1024") {
+		t.Error("Stats view should contain current memory in KB")
+	}
+	if !strings.Contains(statsView, "2048") {
+		t.Error("Stats view should contain max memory in KB")
 	}
 }

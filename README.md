@@ -21,7 +21,7 @@ Perfect for testing git server upgrades, network stability, or repository access
 - 🚨 **Error Analysis** - Track recent errors with timestamps and calculate error rates
 - ⏱️ **Duration Tracking** - See how long the stability test has been running
 - 🎨 **Configurable UI** - Adjustable terminal width for different screen sizes
-- 🎮 **Demo Mode** - Simulate git operations for testing and demonstration
+- 🎮 **Demo Mode** - Simulate git operations for testing and demonstration (use `--demo` flag)
 - 📝 **Logging** - All errors are logged to files for later analysis
 
 ## Installation
@@ -76,11 +76,11 @@ gitter clone https://github.com/user/repo.git --width 150
 Run a simulation without actually cloning repositories (perfect for testing the tool itself):
 
 ```bash
-# Basic demo
-gitter demo
+# Basic demo mode
+gitter clone --demo
 
 # Fast demo with custom settings
-gitter demo --interval 500ms --width 100
+gitter clone --demo --interval 500ms --width 100
 ```
 
 ## Command Line Options
@@ -95,19 +95,10 @@ gitter clone <URL> [flags]
 
 - `-i, --interval duration` - Interval between clones (default: 2s)
 - `-t, --timeout duration` - Git clone timeout (default: 10s)
-- `-w, --width int` - Terminal width for display (default: 120)
+- `-w, --width int` - Terminal width for display (default: 100)
+- `-d, --demo` - Run in demo mode with simulated git operations
 
-### Demo Command
-
-```bash
-gitter demo [flags]
-```
-
-**Flags:**
-
-- `-i, --interval duration` - Interval between simulated clones (default: 2s)
-- `-t, --timeout duration` - Simulated git clone timeout (default: 10s)
-- `-w, --width int` - Terminal width for display (default: 120)
+**Note:** When using `--demo` flag, the URL argument becomes optional as the command will use a simulated repository.
 
 ## Display Interface
 

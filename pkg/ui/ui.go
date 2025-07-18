@@ -291,8 +291,15 @@ func title(s, color string) string {
 		Render(s)
 }
 
-func Start(repo string, interval, timeout time.Duration, width int) error {
-	f, err := os.Create("gitter.log")
+func Start(repo string, interval, timeout time.Duration, width int, demoMode bool) error {
+	var logFileName string
+	if demoMode {
+		logFileName = "gitter-demo.log"
+	} else {
+		logFileName = "gitter.log"
+	}
+
+	f, err := os.Create(logFileName)
 	if err != nil {
 		return err
 	}
@@ -309,7 +316,7 @@ func Start(repo string, interval, timeout time.Duration, width int) error {
 			timeout:  timeout,
 			interval: interval,
 			log:      f,
-			demoMode: false,
+			demoMode: demoMode,
 			width:    width,
 		},
 		stats: &appStats{
@@ -367,55 +374,4 @@ func (as *appStats) updateStats(goroutines int, memory uint64) {
 	if memory > as.maxMemory {
 		as.maxMemory = memory
 	}
-}
-
-// StartDemo starts the application in demo mode with simulated git operations
-func StartDemo(interval, timeout time.Duration, width int) error {
-	f, err := os.Create("gitter-demo.log")
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if closeErr := f.Close(); closeErr != nil {
-			// Log close error, but don't override main error
-			_, _ = fmt.Fprintf(os.Stderr, "Warning: failed to close demo log file: %v\n", closeErr)
-		}
-	}()
-	p := tea.NewProgram(model{
-		settings: &appSettings{
-			t:        time.NewTicker(interval),
-			repo:     "https://github.com/demo/repo.git (simulated)",
-			timeout:  timeout,
-			interval: interval,
-			log:      f,
-			demoMode: true,
-			width:    width,
-		},
-		stats: &appStats{
-			t:             time.NewTicker(1 * time.Second),
-			startTime:     time.Now(),
-			goRoutines:    0,
-			maxGoRoutines: 0,
-			memStats:      &runtime.MemStats{},
-			maxMemory:     0,
-		},
-		errorStats: &errorStats{
-			recentErrors: make([]errorInfo, 0),
-			maxRecent:    5,
-			totalErrors:  0,
-		},
-		success: result{
-			spinner: spinner.New(spinner.WithSpinner(spinner.Dot), spinner.WithStyle(lipgloss.NewStyle().Foreground(lipgloss.Color("#00FF00")))),
-			count:   0,
-		},
-		fail: result{
-			spinner: spinner.New(spinner.WithSpinner(spinner.Dot), spinner.WithStyle(lipgloss.NewStyle().Foreground(lipgloss.Color("#FF0000")))),
-			count:   0,
-		},
-		resultC: make(chan error),
-	}, tea.WithAltScreen())
-	if _, err := p.Run(); err != nil {
-		return err
-	}
-	return nil
 }

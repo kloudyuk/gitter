@@ -7,6 +7,18 @@ import (
 	"time"
 )
 
+const (
+	// Demo timing constants
+	MinCloneTime   = 500 * time.Millisecond // Minimum simulated clone time
+	MaxCloneTime   = 3 * time.Second        // Maximum simulated clone time
+	SuccessRate    = 0.8                    // 80% success rate in demo mode
+	CloneTimeRange = 2500                   // Range in milliseconds (MaxCloneTime - MinCloneTime)
+)
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
 // DemoErrors represents various types of errors that can occur during git operations
 var DemoErrors = []error{
 	errors.New("connection timeout"),
@@ -21,8 +33,8 @@ var DemoErrors = []error{
 
 // Clone simulates a git clone operation with realistic timing and error patterns
 func Clone(ctx context.Context, repo string) error {
-	// Simulate variable clone time (500ms to 3s)
-	cloneTime := time.Duration(500+rand.Intn(2500)) * time.Millisecond
+	// Simulate variable clone time using constants
+	cloneTime := MinCloneTime + time.Duration(rand.Intn(CloneTimeRange))*time.Millisecond
 
 	// Create a timer for the clone operation
 	timer := time.NewTimer(cloneTime)
@@ -32,8 +44,8 @@ func Clone(ctx context.Context, repo string) error {
 	case <-ctx.Done():
 		return ctx.Err()
 	case <-timer.C:
-		// 80% success rate in demo mode
-		if rand.Float32() < 0.8 {
+		// Use SuccessRate constant
+		if rand.Float32() < SuccessRate {
 			return nil // Success
 		}
 		// Return a random error

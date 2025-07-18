@@ -1,11 +1,18 @@
 package cmd
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/kloudyuk/gitter/pkg/ui"
 
 	"github.com/spf13/cobra"
+)
+
+const (
+	// Input validation constants
+	MinWidth = 50
+	MaxWidth = 300
 )
 
 func init() {
@@ -17,17 +24,41 @@ func cloneCmd() *cobra.Command {
 		interval time.Duration
 		timeout  time.Duration
 		width    int
+		demo     bool
 	}{}
 	cmd := &cobra.Command{
 		Use:   "clone URL",
 		Short: "Clone a git repo repeatedly to check stability",
-		Args:  cobra.ExactArgs(1),
+		Long: `Clone a git repository repeatedly to test its stability and reliability.
+Use the --demo flag to run in simulation mode without actually cloning repositories.`,
+		Args: cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return ui.Start(args[0], flags.interval, flags.timeout, flags.width)
+			// Validate input parameters
+			if flags.interval <= 0 {
+				return fmt.Errorf("interval must be positive, got %v", flags.interval)
+			}
+			if flags.timeout <= 0 {
+				return fmt.Errorf("timeout must be positive, got %v", flags.timeout)
+			}
+			if flags.width < MinWidth || flags.width > MaxWidth {
+				return fmt.Errorf("width must be between %d and %d, got %d", MinWidth, MaxWidth, flags.width)
+			}
+
+			var repoURL string
+			if flags.demo {
+				repoURL = "https://github.com/demo/repo.git (simulated)"
+			} else {
+				if len(args) == 0 {
+					return fmt.Errorf("repository URL is required when not in demo mode")
+				}
+				repoURL = args[0]
+			}
+			return ui.Start(repoURL, flags.interval, flags.timeout, flags.width, flags.demo)
 		},
 	}
 	cmd.Flags().DurationVarP(&flags.interval, "interval", "i", 2*time.Second, "interval between clones")
 	cmd.Flags().DurationVarP(&flags.timeout, "timeout", "t", 10*time.Second, "timeout for clone operations")
 	cmd.Flags().IntVarP(&flags.width, "width", "w", 100, "terminal width for display")
+	cmd.Flags().BoolVarP(&flags.demo, "demo", "d", false, "run in demo mode with simulated git operations")
 	return cmd
 }
