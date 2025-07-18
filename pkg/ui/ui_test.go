@@ -2,7 +2,6 @@ package ui
 
 import (
 	"errors"
-	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -10,11 +9,7 @@ import (
 
 func TestErrorStatsTracking(t *testing.T) {
 	// Create error stats with max 3 recent errors
-	errorStats := &errorStats{
-		recentErrors: make([]errorInfo, 0),
-		maxRecent:    3,
-		totalErrors:  0,
-	}
+	errorStats := NewErrorStats(3)
 
 	// Add some errors
 	err1 := errors.New("first error")
@@ -25,45 +20,40 @@ func TestErrorStatsTracking(t *testing.T) {
 	now := time.Now()
 
 	// Add errors
-	errorStats.addError(err1, now)
-	errorStats.addError(err2, now.Add(1*time.Second))
-	errorStats.addError(err3, now.Add(2*time.Second))
-	errorStats.addError(err4, now.Add(3*time.Second))
+	errorStats.AddError(err1, now)
+	errorStats.AddError(err2, now.Add(1*time.Second))
+	errorStats.AddError(err3, now.Add(2*time.Second))
+	errorStats.AddError(err4, now.Add(3*time.Second))
 
 	// Should have only 3 recent errors (oldest dropped)
-	if len(errorStats.recentErrors) != 3 {
-		t.Errorf("Expected 3 recent errors, got %d", len(errorStats.recentErrors))
+	recentErrors := errorStats.GetRecentErrors()
+	if len(recentErrors) != 3 {
+		t.Errorf("Expected 3 recent errors, got %d", len(recentErrors))
 	}
 
 	// Should have total of 4 errors
-	if errorStats.totalErrors != 4 {
-		t.Errorf("Expected 4 total errors, got %d", errorStats.totalErrors)
+	if errorStats.GetTotalErrors() != 4 {
+		t.Errorf("Expected 4 total errors, got %d", errorStats.GetTotalErrors())
 	}
 
 	// Most recent error should be the fourth one
-	if errorStats.recentErrors[len(errorStats.recentErrors)-1].err.Error() != "fourth error" {
+	if recentErrors[len(recentErrors)-1].err.Error() != "fourth error" {
 		t.Errorf("Expected most recent error to be 'fourth error', got '%s'",
-			errorStats.recentErrors[len(errorStats.recentErrors)-1].err.Error())
+			recentErrors[len(recentErrors)-1].err.Error())
 	}
 
 	// Oldest stored error should be the second one (first was dropped)
-	if errorStats.recentErrors[0].err.Error() != "second error" {
+	if recentErrors[0].err.Error() != "second error" {
 		t.Errorf("Expected oldest stored error to be 'second error', got '%s'",
-			errorStats.recentErrors[0].err.Error())
+			recentErrors[0].err.Error())
 	}
 }
 
 func TestAppStatsMaxTracking(t *testing.T) {
-	stats := &appStats{
-		startTime:     time.Now(),
-		goRoutines:    0,
-		maxGoRoutines: 0,
-		memStats:      &runtime.MemStats{},
-		maxMemory:     0,
-	}
+	stats := NewAppStats()
 
 	// Simulate updating goroutines and memory
-	stats.updateStats(5, 1024)
+	stats.UpdateStats(5, 1024)
 	if stats.maxGoRoutines != 5 {
 		t.Errorf("Expected max goroutines to be 5, got %d", stats.maxGoRoutines)
 	}
@@ -72,7 +62,7 @@ func TestAppStatsMaxTracking(t *testing.T) {
 	}
 
 	// Update with lower values - max should remain
-	stats.updateStats(3, 512)
+	stats.UpdateStats(3, 512)
 	if stats.maxGoRoutines != 5 {
 		t.Errorf("Expected max goroutines to remain 5, got %d", stats.maxGoRoutines)
 	}
@@ -81,7 +71,7 @@ func TestAppStatsMaxTracking(t *testing.T) {
 	}
 
 	// Update with higher values - max should increase
-	stats.updateStats(8, 2048)
+	stats.UpdateStats(8, 2048)
 	if stats.maxGoRoutines != 8 {
 		t.Errorf("Expected max goroutines to be 8, got %d", stats.maxGoRoutines)
 	}
@@ -92,6 +82,7 @@ func TestAppStatsMaxTracking(t *testing.T) {
 
 // Test only the view generation without UI updates that could hang
 func TestConfigView(t *testing.T) {
+	styles := NewStyles(100)
 	m := model{
 		settings: &appSettings{
 			repo:     "https://github.com/test/repo.git",
@@ -100,6 +91,7 @@ func TestConfigView(t *testing.T) {
 			width:    100,
 			demoMode: false,
 		},
+		styles: styles,
 	}
 
 	configView := m.configView()
@@ -115,14 +107,18 @@ func TestConfigView(t *testing.T) {
 }
 
 func TestStatsView(t *testing.T) {
+	stats := NewAppStats()
+	// Set up test data by directly setting fields for testing
+	stats.goRoutines = 5
+	stats.maxGoRoutines = 8
+	stats.memStats.Alloc = 1024 * 1024                  // 1MB
+	stats.maxMemory = 2 * 1024 * 1024                   // 2MB
+	stats.startTime = time.Now().Add(-30 * time.Second) // 30 seconds ago
+
+	styles := NewStyles(100)
 	m := model{
-		stats: &appStats{
-			startTime:     time.Now().Add(-30 * time.Second), // 30 seconds ago
-			goRoutines:    5,
-			maxGoRoutines: 8,
-			memStats:      &runtime.MemStats{Alloc: 1024 * 1024}, // 1MB
-			maxMemory:     2 * 1024 * 1024,                       // 2MB
-		},
+		stats:  stats,
+		styles: styles,
 	}
 
 	statsView := m.statsView()

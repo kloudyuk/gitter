@@ -21,10 +21,10 @@ func init() {
 
 func cloneCmd() *cobra.Command {
 	flags := struct {
-		interval    time.Duration
-		timeout     time.Duration
-		width       int
-		demo        bool
+		interval     time.Duration
+		timeout      time.Duration
+		width        int
+		demo         bool
 		errorHistory int
 	}{}
 	cmd := &cobra.Command{
